@@ -5,7 +5,7 @@ author:
   #email: "someone@somewebsite.somedomain"
   url: "https://afrischk.github.io"
 
-baseurl: /
+baseurl: /blog
 
 source: .
 destination: ./_site
