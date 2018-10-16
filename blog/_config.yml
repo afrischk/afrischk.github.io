@@ -13,7 +13,7 @@ permalink: /:title
 paginate: 3
 paginate_path: /page/:num/
 sass:
-    sass_dir: ./_scss
+    sass_dir: ./blog/_scss
 defaults:
   -
     scope:
