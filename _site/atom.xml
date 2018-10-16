@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>My 2 Cents</title>
+ <link href="/atom.xml" rel="self"/>
+ <id>/</id>
+ <updated>2018-10-16T10:15:36+02:00</updated>
+ <author>
+   <name>Adrian Frischkorn</name>
+   <uri>https://afrischk.github.io</uri>
+   <email></email>
+ </author>
+
+ 
+
+ <entry>
+   <title>Hello World</title>
+   <link href="/Hello-World"/>
+   <id>/Hello-World</id>
+   <updated>2018-10-11T00:00:00+02:00</updated>
+   <content type="html">&lt;p&gt;This is my first blog post. The next post is going to have more content!&lt;/p&gt;
+</content>
+ </entry>
+
+ 
+
+</feed>

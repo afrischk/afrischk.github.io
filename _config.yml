@@ -1,0 +1,31 @@
+title: My 2 Cents
+description: "My blog about some stuff."
+author:
+  name: "Adrian Frischkorn"
+  #email: "someone@somewebsite.somedomain"
+  url: "https://afrischk.github.io"
+
+baseurl: /
+
+source: .
+destination: ./_site
+permalink: /:title
+paginate: 3
+paginate_path: /page/:num/
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+future: true
+plugins:
+  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-sitemap
+
+# Custom variables
+owner : "Adrian Frischkorn"
+year : "2018"
