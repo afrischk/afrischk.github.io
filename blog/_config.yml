@@ -12,7 +12,8 @@ destination: ./_site
 permalink: /:title
 paginate: 3
 paginate_path: /page/:num/
-
+sass:
+    sass_dir: ./_scss
 defaults:
   -
     scope:
