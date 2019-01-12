@@ -13,7 +13,7 @@ Obviously it's a very simple question, but for me it took a while to get a start
 After starting to read a few books (not finished yet), visiting the BruCon security conference twice and connecting with some security guys I was able to find my way.
 So here it is.
 
-### My Way Of Dealing With The Question 'How To Become Hacker?'
+### My Way Of Dealing With The Question 'How To Become A Hacker?'
 The first thing I wanted to understand is the types of problems a hacker has to solve.
 There are a lot of different fields like web level attacks, application level attacks, network level attacks, password cracking, etc...
 The best thing to do for me was to find a website that offers challenges to practice these kind of attacks.
