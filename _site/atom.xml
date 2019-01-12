@@ -4,12 +4,22 @@
  <title>My 2 Cents</title>
  <link href="/atom.xml" rel="self"/>
  <id>/</id>
- <updated>2018-10-16T10:15:36+02:00</updated>
+ <updated>2019-01-12T14:54:18+01:00</updated>
  <author>
    <name>Adrian Frischkorn</name>
    <uri>https://afrischk.github.io</uri>
    <email></email>
  </author>
+
+ 
+
+ <entry>
+   <title>How To Become A Hacker</title>
+   <link href="/How-To-Become-A-Hacker"/>
+   <id>/How-To-Become-A-Hacker</id>
+   <updated>2019-01-12T00:00:00+01:00</updated>
+   <content type="html">&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt; &lt;p&gt;Happy new year to everyone! Because of my New Year’s resolutions, I am now blogging about the nerdy things I did in the last months. Honestly, I hope that I will invest more time this year evolve my hacking skills :-).&lt;/p&gt; &lt;p&gt;Last year I asked myself the question...</content>
+ </entry>
 
  
 
