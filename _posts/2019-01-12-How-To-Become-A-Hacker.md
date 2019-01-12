@@ -4,7 +4,6 @@ title: How To Become A Hacker
 published: true
 ---
 
-### Introduction
 Happy new year to everyone!
 Because of my New Year's resolutions, I am now blogging about the nerdy things I did in the last months.
 Honestly, I hope that I will invest more time this year evolve my hacking skills :-).
@@ -45,7 +44,7 @@ Mostly you will read: You can use this or that tool to attack the system.
 The author gives nice introductions into memory segmentation, command-line debugging and assembler code and then dives deep into exploitation techniques.
 
 The last thing I have identified to be very important when evolving your hacking skills is to be up to date with vulnerabilities in existing software.
-I was using (SecurityTracker)(https://securitytracker.com/) to get a weekly vulnerability report, but unfortunately they discontinued the delivery of the free alerts.
+I was using the [SecurityTracker](https://securitytracker.com/) alert to get a weekly vulnerability report, but unfortunately they discontinued the delivery of the free alerts.
 So I need an alternative soon.
 
 ### Key Takeaways
@@ -56,3 +55,4 @@ So I need an alternative soon.
 * Sometimes also reading a book helps to understand the context, get to know what tools exist or get better introductions into exploit techniques
 
 I hope this post helps to figure out where and how to start with evolving your hacking skills.
+I am curious how much I will improve my skills in 2019 as I know that I am at the very very beginning.
