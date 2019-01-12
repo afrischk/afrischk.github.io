@@ -6,7 +6,7 @@ published: true
 
 Happy new year to everyone!
 Because of my New Year's resolutions, I am now blogging about the nerdy things I did in the last months.
-Honestly, I hope that I will invest more time this year evolve my hacking skills :-).
+Honestly, I hope that I will invest more time this year to evolve my hacking skills :-).
 
 Last year I asked myself the question 'How to become a hacker?'.
 Obviously it's a very simple question, but for me it took a while to get a starting point in the business.
