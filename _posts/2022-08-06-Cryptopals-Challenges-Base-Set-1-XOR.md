@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Cryptopals Challenges: Base Set 1.1-1.6 (XOR)
+title: Cryptopals Challenges (XOR)
 published: true
 ---
 
