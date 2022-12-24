@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-12-24T13:28:36+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">My 2 Cents</title><subtitle>My blog about some stuff.</subtitle><author><name>Adrian Frischkorn</name></author><entry><title type="html">Distroless Python Images With Docker</title><link href="http://localhost:4000/distroless-python-310" rel="alternate" type="text/html" title="Distroless Python Images With Docker" /><published>2022-12-24T00:00:00+01:00</published><updated>2022-12-24T00:00:00+01:00</updated><id>http://localhost:4000/distroless-python-310</id><content type="html" xml:base="http://localhost:4000/distroless-python-310">&lt;p&gt;Lately I needed to reduce the attack surface of a Python 3.10 Docker image to a bare minimum. I searched the web for best practices and came across &lt;a href=&quot;https://github.com/GoogleContainerTools/distroless&quot;&gt;distroless Docker&lt;/a&gt; images. As time of my investigations the Python version on the provided distroless image was 3.9.&lt;/p&gt;
+
+&lt;p&gt;After gathering enough information in various blog posts I have created a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; to serve my Python application on a distroless Docker image.&lt;/p&gt;
+
+&lt;div class=&quot;language-Dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; python:3.10-slim as base&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; PYTHONDONTWRITEBYTECODE 1&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; PYTHONFAULTHANDLER 1&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; base AS python-deps&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;pip &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;pipenv
+
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Pipfile .&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Pipfile.lock .&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# create virtual environment&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PIPENV_VENV_IN_PROJECT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1 pipenv &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--deploy&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#https://github.com/GoogleContainerTools/distroless/issues/973#issuecomment-1065169760&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; gcr.io/distroless/base-debian11:nonroot&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /app&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ARCH=x86_64-linux-gnu&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# copy necessary system libs&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=python-deps /lib/${ARCH}/libz.so.1 /lib/${ARCH}/libz.so.1&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# copy python 3.10 and relevant libs&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=python-deps /usr/local/bin/python3.10 /usr/local/bin/python3.10&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=python-deps /usr/local/lib/libpython3.10.so.1.0 /usr/local/lib/libpython3.10.so.1.0&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=python-deps /usr/local/lib/python3.10 /usr/local/lib/python3.10&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# copy packages&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=python-deps /.venv/lib/python3.10/site-packages /app/site-packages&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# set envs&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; PYTHONPATH /app/site-packages&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; LD_LIBRARY_PATH /usr/local/lib&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# copy program&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; main.py .&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 8080&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ENTRYPOINT&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;python3.10&quot;, &quot;main.py&quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can also find this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; &lt;a href=&quot;https://gist.github.com/afrischk/9786927329811b7af75ab3fbdf4edcdd&quot;&gt;here&lt;/a&gt;.
+You might notice that the distroless Python image is makred as ‘experimental’.
+You can find a discussion in the &lt;a href=&quot;https://github.com/GoogleContainerTools/distroless/issues/973#issuecomment-1065169760&quot;&gt;issues section&lt;/a&gt; of the GitHub repostiory.&lt;/p&gt;
+
+&lt;p&gt;For me that is not an issue as I was able to reduce the attack surface rigorously.&lt;/p&gt;</content><author><name>Adrian Frischkorn</name></author><summary type="html">Lately I needed to reduce the attack surface of a Python 3.10 Docker image to a bare minimum. I searched the web for best practices and came across distroless Docker images. As time of my investigations the Python version on the provided distroless image was 3.9.</summary></entry><entry><title type="html">Cryptopals Challenges (XOR)</title><link href="http://localhost:4000/Cryptopals-Challenges-Base-Set-1-XOR" rel="alternate" type="text/html" title="Cryptopals Challenges (XOR)" /><published>2022-08-06T00:00:00+02:00</published><updated>2022-08-06T00:00:00+02:00</updated><id>http://localhost:4000/Cryptopals-Challenges-Base-Set-1-XOR</id><content type="html" xml:base="http://localhost:4000/Cryptopals-Challenges-Base-Set-1-XOR">&lt;p&gt;I thought it was time to delve deeper into the field of cryptography and C.
+Thats why I challenged myself solving the famous Cryptopals challenges using
+the C language. Here is what I have so far…&lt;/p&gt;
+
+&lt;h3 id=&quot;craxor&quot;&gt;Craxor&lt;/h3&gt;
+
+&lt;p&gt;While solving the cryptopals challenges I thought it is probably a good idea to
+implement a commandline application which I can reuse and extend later. So the
+idea for Craxor was born. Craxor can crack xor encrypted data by first guessing
+the key length used, second uses the most probable key to crack the encryption.
+Currently only english language is supported, because the scoring function is
+only capable of scoring english text properly.&lt;/p&gt;
+
+&lt;p&gt;On top of this I wrote the unit tests with the help of unity. These tests
+reflect the xor related subtasks from the base set 1.&lt;/p&gt;
+
+&lt;p&gt;You can find the repository &lt;a href=&quot;https://github.com/afrischk/cryptography&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><author><name>Adrian Frischkorn</name></author><summary type="html">I thought it was time to delve deeper into the field of cryptography and C. Thats why I challenged myself solving the famous Cryptopals challenges using the C language. Here is what I have so far…</summary></entry><entry><title type="html">I Passed CEH</title><link href="http://localhost:4000/I-Passed-CEH" rel="alternate" type="text/html" title="I Passed CEH" /><published>2021-08-04T00:00:00+02:00</published><updated>2021-08-04T00:00:00+02:00</updated><id>http://localhost:4000/I-Passed-CEH</id><content type="html" xml:base="http://localhost:4000/I-Passed-CEH">&lt;p&gt;I passed the CEH (312-50) exam, yay! It was a long and challenging journey, but I finally made it. It grew as an idea in my head back in 2019, I tackled in November 2020. In this post I want to tell you how.&lt;/p&gt;
+
+&lt;h3 id=&quot;my-road-to-success&quot;&gt;My Road To Success&lt;/h3&gt;
+
+&lt;p&gt;Because I didn’t have two years of experience in the field of IT security I had to purchase a course to attempt the CEH exam. I chose the iLearn course from ECCoucil which I purchased via TÜV Rheinland Akademie. You actually buy a voucher that is valid for one year which allows you to attempt the exam and to access the official course material. This includes video lessions, access to virtual environments to practise your new skills and a digital book that is a collection of powerpoints used in the online lessions but with much more detail.&lt;/p&gt;
+
+&lt;h3 id=&quot;time-to-do-some-self-studying&quot;&gt;Time To Do Some Self-Studying&lt;/h3&gt;
+
+&lt;p&gt;I found the online lessions quite useful so I watched all of them to get into the topic and get a rough idea of the concepts and the terminology. At that time the digital book from the official courseware was way to much for me and it was hard to get an overview of what I need to know and where to find it. That’s why I also read the book &lt;a href=&quot;https://www.amazon.de/-/en/Matt-Walker/dp/126045455X/ref=sr_1_1?dchild=1&amp;amp;keywords=CEH+Certified+Ethical+Hacker+All-in-One&amp;amp;qid=1628186947&amp;amp;sr=8-1&quot;&gt;CEH Certified Ethical Hacker All-in-One Exam Guide&lt;/a&gt; from Matt Walker. I definitley recommend this book! It really teaches almost everything you need to know to have a good standing in the real exam. It also comes with a lot of (online) practice quesitons. In addition I have forked a repo with personal notes from the book and added my own notes. This helped me a lot to memorize all the terminologies and concepts. You can find the forked repository &lt;a href=&quot;https://github.com/afrischk/CEHv10StudyGuide&quot;&gt;CEHv10StudyGuide&lt;/a&gt; in my GitHub account. A second source I have used in addition to the official courseware was the &lt;a href=&quot;https://www.boson.com/practice-exam/ethical-hacking-practice-exam-v11&quot;&gt;Boson Practice Exams&lt;/a&gt; for CEH. I can also recommend those, if you want to practise with exams and realistic questions. Furthermore I definitely advice you to build a study plan considering your prior knowledge and time to study. Stick to it! It really helped me a lot to stay organized!&lt;/p&gt;
+
+&lt;h3 id=&quot;the-exam&quot;&gt;The Exam&lt;/h3&gt;
+
+&lt;p&gt;In the end I scheduled the exam three months before the voucher would have expired. You have four hours to complete all of the 125 questions. It took me half of the time but I read all questions very very carefully and I would say two hours is more than enough to complete the test. Anyways you immediately know if you passed or failed after you submit the exam!&lt;/p&gt;
+
+&lt;h3 id=&quot;key-takeaways&quot;&gt;Key Takeaways&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Decide to attempt the CEH examination :-)&lt;/li&gt;
+  &lt;li&gt;For self-studying buy the AIO book from Matt Walker and the Boson Exams&lt;/li&gt;
+  &lt;li&gt;Build your study plan considering your prior knowledge and time to study&lt;/li&gt;
+  &lt;li&gt;Take the exam if you feel ready!&lt;/li&gt;
+  &lt;li&gt;Pass ;-)&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Adrian Frischkorn</name></author><summary type="html">I passed the CEH (312-50) exam, yay! It was a long and challenging journey, but I finally made it. It grew as an idea in my head back in 2019, I tackled in November 2020. In this post I want to tell you how.</summary></entry><entry><title type="html">How To Become An Ethical Hacker</title><link href="http://localhost:4000/How-To-Become-An-Ethical-Hacker" rel="alternate" type="text/html" title="How To Become An Ethical Hacker" /><published>2019-01-12T00:00:00+01:00</published><updated>2019-01-12T00:00:00+01:00</updated><id>http://localhost:4000/How-To-Become-An-Ethical-Hacker</id><content type="html" xml:base="http://localhost:4000/How-To-Become-An-Ethical-Hacker">&lt;p&gt;Happy new year to everyone!
+Because of my New Year’s resolutions, I am now blogging about the nerdy things I did in the last months.
+Honestly, I hope that I will invest more time this year to evolve my hacking skills :-).&lt;/p&gt;
+
+&lt;p&gt;Last year I asked myself the question ‘How to become an ethical hacker?’.
+Obviously it’s a very simple question, but for me it took a while to get a starting point in the business.
+After starting to read a few books (not finished yet), visiting the BruCon security conference twice and connecting with some security guys I was able to find my way.
+To be clear on this, I am talking about hacking with explicit permission!
+So here it is.&lt;/p&gt;
+
+&lt;h3 id=&quot;my-way-of-dealing-with-the-question-how-to-become-an-ethical-hacker&quot;&gt;My Way Of Dealing With The Question ‘How To Become An Ethical Hacker?’&lt;/h3&gt;
+&lt;p&gt;The first thing I wanted to understand is what types of problems a hacker has to solve, in other words, what does a hacker need to know to attack a system.
+There are a lot of different types of attacks like web level attacks, application level attacks, network level attacks, password cracking, etc…
+The best thing to do for me was to find a website that offers challenges to practice these kind of attacks.
+You can kill two birds with one stone by investigating existing challenges: You get to know the needed skill set and you are able to practice your skills by solving the challenges without getting in conflict with the law ;-)&lt;/p&gt;
+
+&lt;p&gt;My favorite website for practising my skills is &lt;a href=&quot;https://root-me.org&quot;&gt;Root-Me&lt;/a&gt;.
+In the time of writing they have published 323 kinds of challenges on their site.
+If you are already a software developer, you may be able to solve some of the challenges already, but not all.
+I promise.&lt;/p&gt;
+
+&lt;p&gt;But what about the missing knowledge to pull off the attacks and do the actual hacking?
+There is no easy answer.
+You have to read a lot, you have to understand the system to attack, you have to understand attack types and you need to memorize them.
+You will probably have to put a lot of effort in it.
+But coming back to the question, my way of dealing with it was to register at another security platform &lt;a href=&quot;https://www.hackerone.com/&quot;&gt;HackerOne&lt;/a&gt;.
+I did this for two reasons.
+First, you get a free PDF where the author goes through different attack types and explains them by referencing existing disclosed bugs from their bug bounty program.
+You really learn a lot by reading and understanding the referenced reports, each containing a proof of concept of how to exploit the discovered bugs!
+Secondly, if I have enough skill, I want to earn some extra money by participating at the bug bounty program.&lt;/p&gt;
+
+&lt;p&gt;Next, when it comes to build up some knowledge also books can be helpful in the era of digitalization ;-)
+I can recommend two books serving as a starting point.
+For me &lt;em&gt;CEH - Certified Ethical Hacker&lt;/em&gt; is a book to get started with, if you want to have an overview of almost everything related to tools, techniques and exploits.
+The author states several times that the book is for passing the CEH exam and sometimes is a little far away from the real world, if you want to pull off an attack.
+But nevertheless, the book gives you good insights although it does not go too much into the details of the attacks.
+Mostly you will read: You can use this or that tool to attack the system.
+&lt;em&gt;Hacking: The Art Of Exploitation&lt;/em&gt; goes much more into detail and it helps if you already know about C, because you will see a lot of C code in this book.
+The author gives nice introductions into memory segmentation, command-line debugging and assembler code and then dives deep into exploitation techniques.&lt;/p&gt;
+
+&lt;p&gt;The last thing I have identified to be very important when evolving your hacking skills is to be up to date with vulnerabilities in existing software.
+I was using the &lt;a href=&quot;https://securitytracker.com/&quot;&gt;SecurityTracker&lt;/a&gt; alert to get a weekly vulnerability report, but unfortunately they discontinued the delivery of the free alerts.
+So I need an alternative soon.&lt;/p&gt;
+
+&lt;h3 id=&quot;key-takeaways&quot;&gt;Key Takeaways&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Figure out what a hacker needs to know to attack a system&lt;/li&gt;
+  &lt;li&gt;Find a website that offers challenges for hackers&lt;/li&gt;
+  &lt;li&gt;Read and understand vulnerability reports (bug bounty, securitytracker, etc…)&lt;/li&gt;
+  &lt;li&gt;Sometimes also reading a book helps to understand the context, get to know what tools exist or get better introductions into exploitation techniques&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I hope this post helps to figure out where and how to start with evolving your hacking skills.
+I am curious how much I will improve my skills in 2019 as I know that I am at the very very beginning.&lt;/p&gt;</content><author><name>Adrian Frischkorn</name></author><summary type="html">Happy new year to everyone! Because of my New Year’s resolutions, I am now blogging about the nerdy things I did in the last months. Honestly, I hope that I will invest more time this year to evolve my hacking skills :-).</summary></entry><entry><title type="html">Hello World</title><link href="http://localhost:4000/Hello-World" rel="alternate" type="text/html" title="Hello World" /><published>2018-10-11T00:00:00+02:00</published><updated>2018-10-11T00:00:00+02:00</updated><id>http://localhost:4000/Hello-World</id><content type="html" xml:base="http://localhost:4000/Hello-World">&lt;p&gt;This is my first blog post. The next post is going to have more content!&lt;/p&gt;</content><author><name>Adrian Frischkorn</name></author><summary type="html">This is my first blog post. The next post is going to have more content!</summary></entry></feed>

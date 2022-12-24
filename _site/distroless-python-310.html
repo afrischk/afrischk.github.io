@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="generator" content="Jekyll">
+
+  <title>Distroless Python Images With Docker</title>
+
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Distroless Python Images With Docker | My 2 Cents</title>
+<meta name="generator" content="Jekyll v3.9.2" />
+<meta property="og:title" content="Distroless Python Images With Docker" />
+<meta name="author" content="Adrian Frischkorn" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Lately I needed to reduce the attack surface of a Python 3.10 Docker image to a bare minimum. I searched the web for best practices and came across distroless Docker images. As time of my investigations the Python version on the provided distroless image was 3.9." />
+<meta property="og:description" content="Lately I needed to reduce the attack surface of a Python 3.10 Docker image to a bare minimum. I searched the web for best practices and came across distroless Docker images. As time of my investigations the Python version on the provided distroless image was 3.9." />
+<link rel="canonical" href="http://localhost:4000/distroless-python-310" />
+<meta property="og:url" content="http://localhost:4000/distroless-python-310" />
+<meta property="og:site_name" content="My 2 Cents" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-12-24T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Distroless Python Images With Docker" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Adrian Frischkorn","url":"https://afrischk.github.io"},"dateModified":"2022-12-24T00:00:00+01:00","datePublished":"2022-12-24T00:00:00+01:00","description":"Lately I needed to reduce the attack surface of a Python 3.10 Docker image to a bare minimum. I searched the web for best practices and came across distroless Docker images. As time of my investigations the Python version on the provided distroless image was 3.9.","headline":"Distroless Python Images With Docker","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/distroless-python-310"},"url":"http://localhost:4000/distroless-python-310"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>adrian@home:~$</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="https://github.com/afrischk"><h2 class="header-link">Github</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>Distroless Python Images With Docker</h2>
+  <time datetime="2022-12-24T00:00:00+01:00" class="by-line">24 Dec 2022</time>
+  <p>Lately I needed to reduce the attack surface of a Python 3.10 Docker image to a bare minimum. I searched the web for best practices and came across <a href="https://github.com/GoogleContainerTools/distroless">distroless Docker</a> images. As time of my investigations the Python version on the provided distroless image was 3.9.</p>
+
+<p>After gathering enough information in various blog posts I have created a <code class="language-plaintext highlighter-rouge">Dockerfile</code> to serve my Python application on a distroless Docker image.</p>
+
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> python:3.10-slim as base</span>
+
+<span class="k">ENV</span><span class="s"> PYTHONDONTWRITEBYTECODE 1</span>
+<span class="k">ENV</span><span class="s"> PYTHONFAULTHANDLER 1</span>
+
+<span class="k">FROM</span><span class="s"> base AS python-deps</span>
+
+<span class="k">RUN </span>pip <span class="nb">install </span>pipenv
+
+<span class="k">COPY</span><span class="s"> Pipfile .</span>
+<span class="k">COPY</span><span class="s"> Pipfile.lock .</span>
+
+<span class="c"># create virtual environment</span>
+<span class="k">RUN </span><span class="nv">PIPENV_VENV_IN_PROJECT</span><span class="o">=</span>1 pipenv <span class="nb">install</span> <span class="nt">--deploy</span>
+
+<span class="c">#https://github.com/GoogleContainerTools/distroless/issues/973#issuecomment-1065169760</span>
+<span class="k">FROM</span><span class="s"> gcr.io/distroless/base-debian11:nonroot</span>
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+
+<span class="k">ARG</span><span class="s"> ARCH=x86_64-linux-gnu</span>
+
+<span class="c"># copy necessary system libs</span>
+<span class="k">COPY</span><span class="s"> --from=python-deps /lib/${ARCH}/libz.so.1 /lib/${ARCH}/libz.so.1</span>
+
+<span class="c"># copy python 3.10 and relevant libs</span>
+<span class="k">COPY</span><span class="s"> --from=python-deps /usr/local/bin/python3.10 /usr/local/bin/python3.10</span>
+<span class="k">COPY</span><span class="s"> --from=python-deps /usr/local/lib/libpython3.10.so.1.0 /usr/local/lib/libpython3.10.so.1.0</span>
+<span class="k">COPY</span><span class="s"> --from=python-deps /usr/local/lib/python3.10 /usr/local/lib/python3.10</span>
+
+<span class="c"># copy packages</span>
+<span class="k">COPY</span><span class="s"> --from=python-deps /.venv/lib/python3.10/site-packages /app/site-packages</span>
+
+<span class="c"># set envs</span>
+<span class="k">ENV</span><span class="s"> PYTHONPATH /app/site-packages</span>
+<span class="k">ENV</span><span class="s"> LD_LIBRARY_PATH /usr/local/lib</span>
+
+<span class="c"># copy program</span>
+<span class="k">COPY</span><span class="s"> main.py .</span>
+
+<span class="k">EXPOSE</span><span class="s"> 8080</span>
+<span class="k">ENTRYPOINT</span><span class="s"> ["python3.10", "main.py"]</span>
+</code></pre></div></div>
+
+<p>You can also find this <code class="language-plaintext highlighter-rouge">Dockerfile</code> <a href="https://gist.github.com/afrischk/9786927329811b7af75ab3fbdf4edcdd">here</a>.
+You might notice that the distroless Python image is makred as ‘experimental’.
+You can find a discussion in the <a href="https://github.com/GoogleContainerTools/distroless/issues/973#issuecomment-1065169760">issues section</a> of the GitHub repostiory.</p>
+
+<p>For me that is not an issue as I was able to reduce the attack surface rigorously.</p>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Adrian Frischkorn</b>
+    </span>
+    
+    <span>© 2022</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>

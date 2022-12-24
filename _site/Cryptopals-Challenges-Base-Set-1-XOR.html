@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="generator" content="Jekyll">
+
+  <title>Cryptopals Challenges (XOR)</title>
+
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Cryptopals Challenges (XOR) | My 2 Cents</title>
+<meta name="generator" content="Jekyll v3.9.2" />
+<meta property="og:title" content="Cryptopals Challenges (XOR)" />
+<meta name="author" content="Adrian Frischkorn" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I thought it was time to delve deeper into the field of cryptography and C. Thats why I challenged myself solving the famous Cryptopals challenges using the C language. Here is what I have so far…" />
+<meta property="og:description" content="I thought it was time to delve deeper into the field of cryptography and C. Thats why I challenged myself solving the famous Cryptopals challenges using the C language. Here is what I have so far…" />
+<link rel="canonical" href="http://localhost:4000/Cryptopals-Challenges-Base-Set-1-XOR" />
+<meta property="og:url" content="http://localhost:4000/Cryptopals-Challenges-Base-Set-1-XOR" />
+<meta property="og:site_name" content="My 2 Cents" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-06T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Cryptopals Challenges (XOR)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Adrian Frischkorn","url":"https://afrischk.github.io"},"dateModified":"2022-08-06T00:00:00+02:00","datePublished":"2022-08-06T00:00:00+02:00","description":"I thought it was time to delve deeper into the field of cryptography and C. Thats why I challenged myself solving the famous Cryptopals challenges using the C language. Here is what I have so far…","headline":"Cryptopals Challenges (XOR)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/Cryptopals-Challenges-Base-Set-1-XOR"},"url":"http://localhost:4000/Cryptopals-Challenges-Base-Set-1-XOR"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>adrian@home:~$</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="https://github.com/afrischk"><h2 class="header-link">Github</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>Cryptopals Challenges (XOR)</h2>
+  <time datetime="2022-08-06T00:00:00+02:00" class="by-line">06 Aug 2022</time>
+  <p>I thought it was time to delve deeper into the field of cryptography and C.
+Thats why I challenged myself solving the famous Cryptopals challenges using
+the C language. Here is what I have so far…</p>
+
+<h3 id="craxor">Craxor</h3>
+
+<p>While solving the cryptopals challenges I thought it is probably a good idea to
+implement a commandline application which I can reuse and extend later. So the
+idea for Craxor was born. Craxor can crack xor encrypted data by first guessing
+the key length used, second uses the most probable key to crack the encryption.
+Currently only english language is supported, because the scoring function is
+only capable of scoring english text properly.</p>
+
+<p>On top of this I wrote the unit tests with the help of unity. These tests
+reflect the xor related subtasks from the base set 1.</p>
+
+<p>You can find the repository <a href="https://github.com/afrischk/cryptography">here</a>.</p>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Adrian Frischkorn</b>
+    </span>
+    
+    <span>© 2022</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>

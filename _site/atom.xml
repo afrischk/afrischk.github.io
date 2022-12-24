@@ -4,7 +4,7 @@
  <title>My 2 Cents</title>
  <link href="/atom.xml" rel="self"/>
  <id>/</id>
- <updated>2019-01-12T14:54:18+01:00</updated>
+ <updated>2022-12-24T13:28:36+01:00</updated>
  <author>
    <name>Adrian Frischkorn</name>
    <uri>https://afrischk.github.io</uri>
@@ -14,11 +14,41 @@
  
 
  <entry>
-   <title>How To Become A Hacker</title>
-   <link href="/How-To-Become-A-Hacker"/>
-   <id>/How-To-Become-A-Hacker</id>
+   <title>Distroless Python Images With Docker</title>
+   <link href="/distroless-python-310"/>
+   <id>/distroless-python-310</id>
+   <updated>2022-12-24T00:00:00+01:00</updated>
+   <content type="html">&lt;p&gt;Lately I needed to reduce the attack surface of a Python 3.10 Docker image to a bare minimum. I searched the web for best practices and came across &lt;a href=&quot;https://github.com/GoogleContainerTools/distroless&quot;&gt;distroless Docker&lt;/a&gt; images. As time of my investigations the Python version on the provided distroless image was 3.9.&lt;/p&gt; &lt;p&gt;After gathering enough...</content>
+ </entry>
+
+ 
+
+ <entry>
+   <title>Cryptopals Challenges (XOR)</title>
+   <link href="/Cryptopals-Challenges-Base-Set-1-XOR"/>
+   <id>/Cryptopals-Challenges-Base-Set-1-XOR</id>
+   <updated>2022-08-06T00:00:00+02:00</updated>
+   <content type="html">&lt;p&gt;I thought it was time to delve deeper into the field of cryptography and C. Thats why I challenged myself solving the famous Cryptopals challenges using the C language. Here is what I have so far…&lt;/p&gt; &lt;h3 id=&quot;craxor&quot;&gt;Craxor&lt;/h3&gt; &lt;p&gt;While solving the cryptopals challenges I thought it is probably a good...</content>
+ </entry>
+
+ 
+
+ <entry>
+   <title>I Passed CEH</title>
+   <link href="/I-Passed-CEH"/>
+   <id>/I-Passed-CEH</id>
+   <updated>2021-08-04T00:00:00+02:00</updated>
+   <content type="html">&lt;p&gt;I passed the CEH (312-50) exam, yay! It was a long and challenging journey, but I finally made it. It grew as an idea in my head back in 2019, I tackled in November 2020. In this post I want to tell you how.&lt;/p&gt; &lt;h3 id=&quot;my-road-to-success&quot;&gt;My Road To Success&lt;/h3&gt; &lt;p&gt;Because...</content>
+ </entry>
+
+ 
+
+ <entry>
+   <title>How To Become An Ethical Hacker</title>
+   <link href="/How-To-Become-An-Ethical-Hacker"/>
+   <id>/How-To-Become-An-Ethical-Hacker</id>
    <updated>2019-01-12T00:00:00+01:00</updated>
-   <content type="html">&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt; &lt;p&gt;Happy new year to everyone! Because of my New Year’s resolutions, I am now blogging about the nerdy things I did in the last months. Honestly, I hope that I will invest more time this year evolve my hacking skills :-).&lt;/p&gt; &lt;p&gt;Last year I asked myself the question...</content>
+   <content type="html">&lt;p&gt;Happy new year to everyone! Because of my New Year’s resolutions, I am now blogging about the nerdy things I did in the last months. Honestly, I hope that I will invest more time this year to evolve my hacking skills :-).&lt;/p&gt; &lt;p&gt;Last year I asked myself the question ‘How...</content>
  </entry>
 
  
